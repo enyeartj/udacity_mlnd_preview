@@ -21,6 +21,7 @@ spam_file = "spam_data/SMSSpamCollection"
 spam_df = pd.read_table(spam_file, sep='\t', names=['label', 'sms_message'])
 
 # Print the first five values of the dataframe with the new column names.
+print 'first five rows of spam dataframe:'
 print spam_df.head(5)
 
 ##############################################################################
@@ -34,6 +35,7 @@ spam_df.label = spam_df.label.map({'ham': 0, 'spam': 1})
 
 # Also, to get an idea of the size of the dataset we are dealing with,
 # print out number of rows and columns using 'shape'.
+print '\nshape of spam dataframe:'
 print spam_df.shape
 
 ##############################################################################
@@ -54,7 +56,8 @@ documents = ['Hello, how are you!',
              'Hello, Call hello you tomorrow?']
 
 lower_case_documents = [s.lower() for s in documents]
-print(lower_case_documents)
+print '\ndocuments converted to lower case:'
+print lower_case_documents
 
 # Step 2: Removing all punctuations
 import string
@@ -81,4 +84,32 @@ frequency_list = [dict(Counter(words)) for words in preprocessed_documents]
 from sklearn.feature_extraction.text import CountVectorizer
 count_vector = CountVectorizer()
 
+# Fit your document dataset to the CountVectorizer object you have created
+# using fit(), and get the list of words which have been categorized
+# as features using the get_feature_names() method
+count_vector.fit(documents)
+print '\ncount vectorizer feature names:'
+print list(enumerate(count_vector.get_feature_names()))
+
+# Create a matrix with the rows being each of the 4 documents, and
+# the columns being each word. The corresponding (row, column) value is
+# the frequency of occurrence of that word(in the column) in
+# a particular document(in the row). You can do this using
+# the transform() method and passing in the document data set as the argument.
+# The transform() method returns a matrix of numpy integers, you can convert
+# this to an array using toarray(). Call the array 'doc_array'
+doc_array = count_vector.transform(documents).toarray()
+print '\ndoc_array:'
+print doc_array
+
+# Convert the array we obtained, loaded into 'doc_array', into a dataframe and
+# set the column names to the word names(which you computed earlier
+# using get_feature_names(). Call the dataframe 'frequency_matrix'
+frequency_array = pd.DataFrame(doc_array, columns=count_vector.get_feature_names())
+print '\ndoc_array converted to dataframe (frequency_array):'
+print frequency_array.head()
+
+##############################################################################
+# Step 3.1: Training and testing sets
+##############################################################################
 
