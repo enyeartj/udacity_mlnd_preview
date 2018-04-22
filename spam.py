@@ -112,4 +112,73 @@ print frequency_array.head()
 ##############################################################################
 # Step 3.1: Training and testing sets
 ##############################################################################
+# Split the dataset into a training and testing set by using
+# the train_test_split method in sklearn.
+# Split the data using the following variables:
+#
+#   X_train is our training data for the 'sms_message' column.
+#   y_train is our training data for the 'label' column
+#   X_test is our testing data for the 'sms_message' column.
+#   y_test is our testing data for the 'label' column Print out
+#       the number of rows we have in each our training and testing data.
+from sklearn.cross_validation import train_test_split
+
+X = spam_df['sms_message']
+y = spam_df['label']
+
+X_train, X_test, y_train, y_test = train_test_split(X, y, random_state=1)
+
+print '\nNumber of rows in the total set: {}'.format(spam_df.shape[0])
+print 'Number of rows in the training set: {}'.format(X_train.shape[0])
+print 'Number of rows in the test set: {}'.format(X_test.shape[0])
+
+##############################################################################
+# Step 3.2: Applying Bag of Words processing to our dataset
+##############################################################################
+count_vector = CountVectorizer()
+# Fit training set and transform
+training_data = count_vector.fit_transform(X_train)
+# Just transform the test set
+testing_data = count_vector.transform(X_test)
+
+##############################################################################
+# Step 4.1: Bayes Theorem implementation from scratch
+##############################################################################
+# Given:
+#   P(Pos|Disease) = "Sensitivity" or True Positive Rate
+#   P(Neg|~Disease) = "Specificity" or True Negative Rate
+#       NOTE: P(Pos|~Disease) = 1 - P(Neg|~Disease)
+#   P(Disease) = (a given prior probability)
+#
+# Find the other prior probability:
+#   P(Pos) = P(D)*Sensitivity + P(~D)*(1 - Specificity)
+#          = P(D)*P(Pos|D) + (1 - P(D))*(1 - P(Neg|~Disease))
+#          = P(D)*P(Pos|D) + P(~D)*P(Pos|~D)
+#
+# Find the posterior probability:
+#   P(A and B) = P(A)P(B|A) = P(B)P(A|B)
+#   ==> P(B|A) = P(B)P(A|B) / P(A)
+#   so,
+#   P(D|Pos) = P(D)*P(Pos|D) / P(Pos)
+#            = P(D)*P(Pos|D) / [P(D)*P(Pos|D) + (1 - P(D)*(1 - P(Neg|~D)))]
+
+##############################################################################
+# Step 4.2: Naive Bayes implementation from scratch
+##############################################################################
+# (See handwritten notes or Bayesian_Inference.ipynb)
+
+##############################################################################
+# Step 5: Naive Bayes implementation using scikit-learn
+##############################################################################
+# for discrete features (like word counts for text classification), use the
+# multinominal Naive Bayes implementation
+# for continuous features, use Gaussian Naive Bayes
+from sklearn.naive_bayes import MultinomialNB
+naive_bayes = MultinomialNB()
+naive_bayes.fit(training_data, y_train)
+predictions = naive_bayes.predict(testing_data)
+
+##############################################################################
+# Step 6: Evaluating our model
+##############################################################################
 
