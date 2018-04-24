@@ -181,4 +181,8 @@ predictions = naive_bayes.predict(testing_data)
 ##############################################################################
 # Step 6: Evaluating our model
 ##############################################################################
-
+from sklearn.metrics import accuracy_score, precision_score, recall_score, f1_score
+print '\nAccuracy score: ', accuracy_score(predictions, y_test)
+print 'Precision score: ', precision_score(predictions, y_test)
+print 'Recall score: ', recall_score(predictions, y_test)
+print 'F1 score: ', f1_score(predictions, y_test)
